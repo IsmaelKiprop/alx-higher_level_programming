@@ -120,4 +120,3 @@ class Rectangle:
     def square(cls, size=0):
         """ Make rectangle a square """
         return cls(size, size)
-
