@@ -1,68 +1,59 @@
 #!/usr/bin/python3
-# 100-matrix_mul.py
-"""Defines a matrix multiplication function."""
+"""Multiply two matrices against one another"""
 
 
-def matrix_mul(m_a, m_b):
-    """Multiply two matrices.
-
-    Args:
-        m_a (list of lists of ints/floats): The first matrix.
-        m_b (list of lists of ints/floats): The second matrix.
-    Raises:
-        TypeError: If either m_a or m_b is not a list of lists of ints/floats.
-        TypeError: If either m_a or m_b is empty.
-        TypeError: If either m_a or m_b has different-sized rows.
-        ValueError: If m_a and m_b cannot be multiplied.
-    Returns:
-        A new matrix representing the multiplication of m_a by m_b.
+def matrix_mul(m_a, m_b):  # must be list
+    """Multiply two matrices, element by element
     """
+    if type(m_a) is not list:
+        raise TypeError('m_a must be a list')
+    if type(m_b) is not list:
+        raise TypeError('m_b must be a list')
 
-    if m_a == [] or m_a == [[]]:
-        raise ValueError("m_a can't be empty")
-    if m_b == [] or m_b == [[]]:
-        raise ValueError("m_b can't be empty")
+    for item_a, item_b in zip(m_a, m_b):  # must be list of lists
+        if type(item_a) is not list:
+            raise TypeError('m_a must be a list of lists')
+        if type(item_b) is not list:
+            raise TypeError('m_b must be a list of lists')
 
-    if not isinstance(m_a, list):
-        raise TypeError("m_a must be a list")
-    if not isinstance(m_b, list):
-        raise TypeError("m_b must be a list")
+    if len(m_a) is 0:  # check for empty lists
+        raise ValueError('m_a can\'t be empty')
+    else:
+        for row in m_a:
+            if len(row) is 0:
+                raise ValueError('m_a can\'t be empty')
+    if len(m_b) is 0:
+        raise ValueError('m_b can\'t be empty')
+    else:
+        for row in m_b:
+            if len(row) is 0:
+                raise ValueError('m_b can\'t be empty')
 
-    if not all(isinstance(row, list) for row in m_a):
-        raise TypeError("m_a must be a list of lists")
-    if not all(isinstance(row, list) for row in m_b):
-        raise TypeError("m_b must be a list of lists")
+    for item_a, item_b in zip(m_a, m_b):  # elems can only be float/int
+        for elem_a, elem_b in zip(item_a, item_b):
+            if type(elem_a) is not float and type(elem_a) is not int:
+                raise TypeError('m_a should contain only integers or floats')
+            if type(elem_b) is not float and type(elem_b) is not int:
+                raise TypeError('m_b should contain only integers or floats')
 
-    if not all((isinstance(ele, int) or isinstance(ele, float))
-               for ele in [num for row in m_a for num in row]):
-        raise TypeError("m_a should contain only integers or floats")
-    if not all((isinstance(ele, int) or isinstance(ele, float))
-               for ele in [num for row in m_b for num in row]):
-        raise TypeError("m_b should contain only integers or floats")
+    len_a = len(m_a[0])  # uniform rows
+    len_b = len(m_b[0])
+    for row_a, row_b in zip(m_a, m_b):
+        if len(row_a) is not len_a:
+            raise TypeError('each row of m_a must be of the same size')
+        if len(row_b) is not len_b:
+            raise TypeError('each row of m_b must be of the same size')
 
-    if not all(len(row) == len(m_a[0]) for row in m_a):
-        raise TypeError("each row of m_a must should be of the same size")
-    if not all(len(row) == len(m_b[0]) for row in m_b):
-        raise TypeError("each row of m_b must should be of the same size")
+    m_p = [[0 for elem in range(len_b)]
+           for row in range(len(m_a))]  # match m_a rows
 
     if len(m_a[0]) != len(m_b):
         raise ValueError("m_a and m_b can't be multiplied")
 
-    inverted_b = []
-    for r in range(len(m_b[0])):
-        new_row = []
-        for c in range(len(m_b)):
-            new_row.append(m_b[c][r])
-        inverted_b.append(new_row)
+    # perform multiplication
+    for row_a in range(len(m_a)):
+        for elem_b in range(len_b):
+            for row_b in range(len(m_b)):
+                m_p[row_a][elem_b] += m_a[row_a][row_b] * m_b[row_b][elem_b]
 
-    new_matrix = []
-    for row in m_a:
-        new_row = []
-        for col in inverted_b:
-            prod = 0
-            for i in range(len(inverted_b[0])):
-                prod += row[i] * col[i]
-            new_row.append(prod)
-        new_matrix.append(new_row)
-
-    return new_matrix
+    return m_p
