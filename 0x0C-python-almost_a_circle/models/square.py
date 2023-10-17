@@ -1,85 +1,74 @@
 #!/usr/bin/python3
-"""Contain class `Square` that inherits from `Rectangle` """
-
-
+"""Module that defines a square object"""
 from models.rectangle import Rectangle
 
 
 class Square(Rectangle):
-    """
-    Class `Square` that inherits from `Rectangle`:
-
-    In the file models/square.py
-    Class Square inherits from Rectangle
-    Class constructor: def __init__(self, size, x=0, y=0, id=None):
-    Call the super class with id - this super call with use the logic
-    of the __init__ of the Rectangle class
-    All width, height, x and y validation must inherit from Rectangle -
-    same behavior in case of wrong data
-    """
+    """Defines a square class"""
 
     def __init__(self, size, x=0, y=0, id=None):
-        """Instantiate class object.
-        Arguments
-            size: size of square
-            x: x axis offset
-            y: y axis offset
-            id: object id
+        """Method that initialized the square
+        Args:
+           size: side's size of the square
+           x: Position on x axis.
+           y: Position on y axis.
+        Return:
+           Always nothing.
         """
         super().__init__(size, size, x, y, id)
 
+    def __str__(self):
+        """Method that returns a string"""
+        return ("[Square] ({}) {}/{} - {}".format(self.id, self.x, self.y,
+                                                  self.width))
+
     @property
     def size(self):
-        """Return value of size"""
+        """Getter the size of the square
+        """
         return self.width
 
     @size.setter
     def size(self, value):
-        """Set the value for width"""
-        if type(value) is not int:
-            raise TypeError("width must be an integer")
-        if value <= 0:
-            raise ValueError("width must be > 0")
+        """Setter the size of the square
+        Args:
+           value: Size to assign
+        Return:
+           Always Nothing
+        """
         self.width = value
-        self.height = value
+        self.heigth = value
 
     def update(self, *args, **kwargs):
-        """Update values of all parameters"""
-        if args and args != 0:
-            position = 0
-            for arg in args:
-                if position == 0:
-                    self.id = arg
-                elif position == 1:
-                    self.size = arg
-                elif position == 2:
-                    self.x = arg
-                elif position == 3:
-                    self.y = arg
-                else:
-                    return
-                position += 1
-        elif kwargs and len(kwargs) != 0:
-            for i, j in kwargs.items():
-                if i == "id":
-                    self.id = j
-                elif i == "size":
-                    self.size = j
-                elif i == "x":
-                    self.x = j
-                elif i == "y":
-                    self.y = j
-
-    def __str__(self):
+        """Method that update arguments for square object
+        Args:
+           *args: list of arguments.
+           **kwargs: Dictionary of the arguments.
+        Return:
+           Always nothing
         """
-        __str__ print information for square
-
-        Return [Square] (<id>) <x>/<y> - <size>
-        """
-        return ("[Square] ({}) {}/{} - {}".format(self.id, self.x,
-                                                  self.y, self.height))
+        dict_order = ['id', 'size', 'x', 'y']
+        if args is not None and bool(args) is True:
+            i = 0
+            for key in dict_order:
+                try:
+                    setattr(self, key, args[i])
+                except IndexError:
+                    pass
+                i += 1
+        else:
+            for key in dict_order:
+                try:
+                    setattr(self, key, kwargs[key])
+                except KeyError:
+                    pass
 
     def to_dictionary(self):
-        """Dictionary for attributes and values"""
-        return {"id": self.id, "size": self.size,
-                "x": self.x, "y": self.y}
+        """Method that returns the dictionary
+           representation of a Square.
+        """
+        dict_order = ['id', 'x', 'size', 'y']
+        dict_attrs = {}
+        for key in dict_order:
+            dict_attrs[key] = getattr(self, key)
+        return dict_attrs
