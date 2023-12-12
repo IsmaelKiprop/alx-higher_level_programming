@@ -1,14 +1,17 @@
 #!/usr/bin/node
+const x = process.argv[2];
 
-const size = parseInt(process.argv[2]);
-const myStr = 'X';
-
-if (size) {
-  let i = 0;
-  while (i < size) {
-    console.log(myStr.repeat(size));
-    i++;
-  }
-} else {
+if (!parseInt(x)) {
   console.log('Missing size');
+} else {
+  for (let i = 0; i < x; i++) {
+    let y = 0;
+    let myVar = '';
+
+    while (y < x) {
+      myVar = myVar + 'X';
+      y++;
+    }
+    console.log(myVar);
+  }
 }
